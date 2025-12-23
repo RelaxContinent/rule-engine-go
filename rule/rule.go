@@ -22,8 +22,12 @@ func NewAndSpecification(specs ...Specification) *AndSpecification {
 // TODO: IsSatisfiedByメソッドを実装してください
 // ヒント: すべてのspecsがtrueを返す場合のみtrueを返す
 func (a *AndSpecification) IsSatisfiedBy(user User, order Order) bool {
-	// TODO: ここに実装
-	return false
+	for _, spec := range a.specs {
+		if !spec.IsSatisfiedBy(user, order) {
+			return false
+		}
+	}
+	return true
 }
 
 // OrSpecification は複数の条件をORで結合
@@ -36,9 +40,12 @@ func NewOrSpecification(specs ...Specification) *OrSpecification {
 }
 
 // TODO: IsSatisfiedByメソッドを実装してください
-// ヒント: いずれかのspecsがtrueを返せばtrueを返す
 func (o *OrSpecification) IsSatisfiedBy(user User, order Order) bool {
-	// TODO: ここに実装
+	for _, spec := range o.specs {
+		if spec.IsSatisfiedBy(user, order) {
+			return true
+		}
+	}
 	return false
 }
 
@@ -54,8 +61,7 @@ func NewNotSpecification(spec Specification) *NotSpecification {
 // TODO: IsSatisfiedByメソッドを実装してください
 // ヒント: specの結果を反転させる
 func (n *NotSpecification) IsSatisfiedBy(user User, order Order) bool {
-	// TODO: ここに実装
-	return false
+	return !n.spec.IsSatisfiedBy(user, order)
 }
 
 // ========================================
@@ -93,30 +99,25 @@ type PremiumMemberSpec struct {
 }
 
 func NewPremiumMemberSpec() *PremiumMemberSpec {
-	// TODO: ここに実装
 	return &PremiumMemberSpec{}
 }
 
-// TODO: IsSatisfiedByメソッドを実装してください
 func (p *PremiumMemberSpec) IsSatisfiedBy(user User, order Order) bool {
-	// TODO: ここに実装
-	return false
+	return user.MembershipLevel == "gold" || user.MembershipLevel == "platinum"
 }
 
 // TODO: MinimumAgeSpec を実装してください
 // 最低年齢の条件を判定
 type MinimumAgeSpec struct {
-	// TODO: フィールドを定義
+	minAge int
 }
 
 // TODO: コンストラクタを実装
 func NewMinimumAgeSpec(minAge int) *MinimumAgeSpec {
-	// TODO: ここに実装
-	return nil
+	return &MinimumAgeSpec{minAge: minAge}
 }
 
 // TODO: IsSatisfiedByメソッドを実装
 func (m *MinimumAgeSpec) IsSatisfiedBy(user User, order Order) bool {
-	// TODO: ここに実装
-	return false
+	return user.Age >= m.minAge
 }
